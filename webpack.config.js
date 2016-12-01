@@ -1,7 +1,8 @@
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const webpack = require("webpack"),
+      ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: "./main.js",
+  entry: "./dist/builds/js/main.js",
   output: {
     filename: "./bundle.js"
   },
@@ -11,10 +12,14 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.(png|jpg|jpeg|svg|gif|otf|ttf|eot|woff|woff2|)$/,
+        loader: "url-loader"
+      },
+      {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract({
           fallbackLoader: "style-loader",
-          loader: "css-loader?sourceMap,minimize!postcss-loader!sass-loader?"
+          loader: "css-loader?sourceMap,minimize!postcss-loader!sass-loader"
         })
       },
       {
@@ -24,10 +29,22 @@ module.exports = {
         query: {
           presets: ["es2015"]
         }
+      },
+      {
+        test: /\.html$/,
+        loader: "html-loader"
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin("styles.css")
-  ]
+    new ExtractTextPlugin("dist/css/styles.css"),
+    new webpack.optimize.UglifyJsPlugin({
+      comments: false
+    }),
+  ],
+  devServer: {
+    baseContent: "./",
+    inline: true,
+    port : 3000
+  }
 };
