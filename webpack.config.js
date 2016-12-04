@@ -1,10 +1,11 @@
-const webpack = require("webpack"),
-      ExtractTextPlugin = require("extract-text-webpack-plugin");
+const webpack = require("webpack");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: "./dist/builds/js/main.js",
+  entry: "./src/js/main.js",
   output: {
-    filename: "./bundle.js"
+    path: "bundle",
+    filename: "./[name].bundle.js",
   },
   watch: true,
   devtool: "source-map",
@@ -12,8 +13,8 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.(png|jpg|jpeg|svg|gif|otf|ttf|eot|woff|woff2|)$/,
-        loader: "url-loader"
+        test: /\.(png|jpg|jpeg|svg|gif|otf|ttf|eot|woff|woff2|)$/i,
+        loader: "file-loader?name=../src/images/[name].[ext]"
       },
       {
         test: /\.scss$/,
@@ -37,14 +38,12 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin("dist/css/styles.css"),
+    new ExtractTextPlugin("../src/css/styles.css"),
     new webpack.optimize.UglifyJsPlugin({
       comments: false
     }),
   ],
   devServer: {
-    baseContent: "./",
-    inline: true,
     port : 3000
   }
 };
